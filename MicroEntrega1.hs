@@ -54,8 +54,43 @@ swap  = incrementarProgramCounter.intercambiarValoresEnAcumuladores
 intercambiarValoresEnAcumuladores :: Instruccion
 intercambiarValoresEnAcumuladores microcontrolador = microcontrolador { acumuladorA = (acumuladorB microcontrolador) , acumuladorB = (acumuladorA microcontrolador)}
 
---add :: Instruccion
---add  = (cargarEnAcumuladorB 0 (cargarEnAcumuladorA(resultadoDeOperarConAcumuladores (+) microcontrolador)))
+add :: Instruccion
 
-resultadoDeOperarConAcumuladores :: (Int -> Int -> Int) -> Microcontrolador -> Int
-resultadoDeOperarConAcumuladores funcion microcontrolador = funcion (acumuladorA microcontrolador) (acumuladorB microcontrolador)
+add  = ((incrementarProgramCounter).(vaciarAcumuladorB).(operarContenidosAcumuladoresAB (+)))
+
+operarContenidosAcumuladoresAB operacion microcontrolador = microcontrolador { acumuladorA = (operacion (acumuladorA microcontrolador) (acumuladorB microcontrolador)) }
+
+vaciarAcumuladorB microcontrolador = microcontrolador { acumuladorB = (acumuladorB microcontrolador) * 0 }
+
+--Punto 3.3.3.2 Implementar un programa que sume 10 + 22
+-- Aca utilizamos el xt8088
+
+xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " :" , instrucciones = [swap,add] }
+
+funcionSumar10Mas22 xt8088 = ((add).(lodV (12)).(intercambiarValoresEnAcumuladores).(lodV 10)) xt8088
+
+--Punto 3.3.4
+
+--Accion divide 
+
+divide :: Instruccion
+
+divide = ((incrementarProgramCounter).(vaciarAcumuladorB).(operarContenidosAcumuladoresAB (div)))
+
+--Accion STR (Aca medio que me quede estancado porque hay que utilizar la posicion de memoria para guardar el valor que nos dan)
+
+--str :: Int -> Int -> Accion
+
+--str addr valor = (incrementarContadorPrograma.(guardarValorEnMemoria addr valor))
+
+--guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria = (memoria microprocesador) ++ val }
+
+--Accion LOD
+
+lod :: Int -> Instruccion
+
+lod addr = (incrementarProgramCounter.(guardarValorEnAcumuladorA addr))
+
+guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA = ((!!) (memoria microcontrolador) (addr-1)) }
+
+-- (addr - 1) porque en las listas los sub-indices comienzan por 0
