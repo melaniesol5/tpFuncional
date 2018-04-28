@@ -64,18 +64,26 @@ vaciarAcumuladorB microcontrolador = microcontrolador { acumuladorB = (acumulado
 
 --Punto 3.3.3.2 Implementar un programa que sume 10 + 22
 -- Aca utilizamos el xt8088
-
+{-
 xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " :" , instrucciones = [swap,add] }
 
 funcionSumar10Mas22 xt8088 = ((add).(lodV (12)).(intercambiarValoresEnAcumuladores).(lodV 10)) xt8088
+
+-}
 
 --Punto 3.3.4
 
 --Accion divide 
 
-divide :: Instruccion
 
-divide = ((incrementarProgramCounter).(vaciarAcumuladorB).(operarContenidosAcumuladoresAB (div)))
+divide :: Instruccion
+divide microcontrolador     
+ | (acumuladorB microcontrolador) /= 0  =  (incrementarProgramCounter.vaciarAcumuladorB.(operarContenidosAcumuladoresAB(div)))microcontrolador
+ | otherwise = mensajeDeError "DIVISION BY CERO" microcontrolador
+
+mensajeDeError :: String -> Instruccion
+mensajeDeError mensaje microcontrolador = microcontrolador { etiqueta = mensaje }
+
 
 --Accion STR (Aca medio que me quede estancado porque hay que utilizar la posicion de memoria para guardar el valor que nos dan)
 
@@ -91,6 +99,6 @@ lod :: Int -> Instruccion
 
 lod addr = (incrementarProgramCounter.(guardarValorEnAcumuladorA addr))
 
-guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA = ((!!) (memoria microcontrolador) (addr-1)) }
+guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA = ((!!) (memoriaDeDatos microcontrolador) (addr-1)) }
 
 -- (addr - 1) porque en las listas los sub-indices comienzan por 0
