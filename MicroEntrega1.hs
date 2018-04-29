@@ -87,11 +87,12 @@ mensajeDeError mensaje microcontrolador = microcontrolador { etiqueta = mensaje 
 
 --Accion STR (Aca medio que me quede estancado porque hay que utilizar la posicion de memoria para guardar el valor que nos dan)
 
---str :: Int -> Int -> Accion
+str :: Int -> Int -> Instruccion
 
---str addr valor = (incrementarContadorPrograma.(guardarValorEnMemoria addr valor))
+str addr valor = ((incrementarProgramCounter).(guardarValorEnMemoria addr valor))
 
---guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria = (memoria microprocesador) ++ val }
+guardarValorEnMemoria addr valor microcontrolador = microcontrolador { memoriaDeDatos = take (addr - 1) (memoriaDeDatos microcontrolador) ++ [valor] ++ drop (addr) (memoriaDeDatos microcontrolador) }
+
 
 --Accion LOD
 
@@ -102,3 +103,7 @@ lod addr = (incrementarProgramCounter.(guardarValorEnAcumuladorA addr))
 guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA = ((!!) (memoriaDeDatos microcontrolador) (addr-1)) }
 
 -- (addr - 1) porque en las listas los sub-indices comienzan por 0
+
+-- Punto 3.4.4.2
+
+--  Poniendo el siguiente codigo en la linea de comandos de GHCi, modelamos un programa que divida 2 por 0 y nos de el mensaje de error "DIVISON BY ZERO" ((divide).(lod 1).(swap).(lod (2)).(str 2 0).(str 1 2))xt8088
