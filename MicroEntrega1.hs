@@ -3,6 +3,8 @@ module MicroEntrega where
 import Text.Show.Functions
 
 -- Modelado de tipo de dato
+{- Elegimos trabajar con data porque nos pareció más practico , es más expresivo, y a su vez nos permite trabajar con las funciones 
+que se crean dentro de la misma -}
 
 data Microcontrolador = Microcontrolador{
 	nombre :: String,
@@ -19,9 +21,7 @@ type Instruccion = Microcontrolador -> Microcontrolador
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " :" , instrucciones = [] }
---RECORDAR: una vez finalizadas las funciones , agregarlas a la lista de instrucciones
-
+xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 -- Desarrollar la función NOP
 
@@ -38,8 +38,8 @@ seguirProximaInstruccion microcontrolador = microcontrolador { instrucciones = t
 
 -- 3.3 - Modelar las instrucciones LODV , SWAP y ADD
 
-lodv :: Int -> Instruccion
-lodv unValor  = incrementarProgramCounter.(cargarEnAcumuladorA unValor)
+lodV :: Int -> Instruccion
+lodV unValor  = incrementarProgramCounter.(cargarEnAcumuladorA unValor)
 
 incrementarProgramCounter :: Microcontrolador -> Microcontrolador
 incrementarProgramCounter microcontrolador = microcontrolador { programCounter = (programCounter microcontrolador) + 1 }
@@ -68,7 +68,7 @@ vaciarAcumuladorB microcontrolador = microcontrolador { acumuladorB = (acumulado
 --Punto 3.3.3.2 Implementar un programa que sume 10 + 22
 -- Aca utilizamos el xt8088
 
-xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " :" , instrucciones = [swap,add] }
+-- xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 funcionSumar10Mas22 :: Microcontrolador -> Microcontrolador
 funcionSumar10Mas22 xt8088 = ((add).(lodV (12)).(intercambiarValoresEnAcumuladores).(lodV 10)) xt8088
@@ -86,7 +86,6 @@ mensajeDeError :: String -> Instruccion
 mensajeDeError mensaje microcontrolador = microcontrolador { etiqueta = mensaje }
 
 
---Accion STR (Aca medio que me quede estancado porque hay que utilizar la posicion de memoria para guardar el valor que nos dan)
 
 str :: Int -> Int -> Instruccion
 str addr valor = ((incrementarProgramCounter).(guardarValorEnMemoria addr valor))
@@ -121,17 +120,17 @@ guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA
 
 -- Ejecutar SWAP 
 
-fp20 = Microcontrolador { nombre = "fp20" , memoriaDeDatos = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " :" , instrucciones = [] }
+fp20 = Microcontrolador { nombre = "fp20" , memoriaDeDatos = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 -- Se escribe en la consola: swap fp20 y podemos ver que se intercambian los valores entre el acumulador A y el acumulador B
 
 -- Sumar 10 + 22
 
--- Se escibre en la consola funcionSumar10Mas22 y vemos que en acumualdor A esta en 32 y el acumulador B en 0
+-- Se escibre en la consola funcionSumar10Mas22 y vemos que en acumulador A esta en 32 y el acumulador B en 0
 
 --Punto 4.3.4.1
 
-at8086 = Microcontrolador { nombre = "at8086" , memoriaDeDatos = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " :" , instrucciones = [] }
+at8086 = Microcontrolador { nombre = "at8086" , memoriaDeDatos = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 -- Se escribe en la consola str 2 5 at8086 y vemos que se cumplen las condiciones.
 
@@ -150,4 +149,4 @@ asignarPosicionesMemoria microcontrolador = microcontrolador { memoriaDeDatos = 
 
 -- 4.3.4.4
 
--- Se escribe en la consola: ((divide).(lod 1).(swap).(lod (2)).(str 2 4).(str 1 12))xt8088
+-- Se escribe en la consola: ((divide).(lod 1).(swap).(lod (2)).(str 2 4).(str 1 2))xt8088
