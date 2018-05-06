@@ -6,7 +6,7 @@ import Text.Show.Functions
 {- Elegimos trabajar con data porque nos pareció más practico , es más expresivo, y a su vez nos permite trabajar con las funciones 
 que se crean dentro de la misma -}
 
-data Microcontrolador = Microcontrolador{
+data Microprocesador = Microprocesador{
 	nombre :: String,
 	memoriaDeDatos :: [Int],
 	acumuladorA :: Int ,
@@ -16,24 +16,24 @@ data Microcontrolador = Microcontrolador{
 	instrucciones :: [Instruccion]
 }deriving (Show)
 
-type Instruccion = Microcontrolador -> Microcontrolador
+type Instruccion = Microprocesador -> Microprocesador
 
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
+xt8088 = Microprocesador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 -- Desarrollar la función NOP
 
 nop :: Instruccion
 nop  = incrementarProgramCounter.seguirProximaInstruccion
 
-seguirProximaInstruccion :: Microcontrolador -> Microcontrolador
-seguirProximaInstruccion microcontrolador = microcontrolador { instrucciones = tail (instrucciones microcontrolador)}
+seguirProximaInstruccion :: Microprocesador -> Microprocesador
+seguirProximaInstruccion microprocesador = microprocesador { instrucciones = tail (instrucciones microprocesador)}
 
 -- 3.2 - Desde la consola modele un programa que haga avanzar tres posiciones el program counter
 
---   (nop.nop.nop)microcontrolador  
+--   (nop.nop.nop)microprocesador  
 -- El concepto que interviene para lograr este punto es la composicion
 
 -- 3.3 - Modelar las instrucciones LODV , SWAP y ADD
@@ -41,36 +41,36 @@ seguirProximaInstruccion microcontrolador = microcontrolador { instrucciones = t
 lodV :: Int -> Instruccion
 lodV unValor  = incrementarProgramCounter.(cargarEnAcumuladorA unValor)
 
-incrementarProgramCounter :: Microcontrolador -> Microcontrolador
-incrementarProgramCounter microcontrolador = microcontrolador { programCounter = (programCounter microcontrolador) + 1 }
+incrementarProgramCounter :: Microprocesador -> Microprocesador
+incrementarProgramCounter microprocesador = microprocesador { programCounter = (programCounter microprocesador) + 1 }
 
 cargarEnAcumuladorA :: Int -> Instruccion
-cargarEnAcumuladorA unValor microcontrolador = microcontrolador { acumuladorA = unValor }
+cargarEnAcumuladorA unValor microprocesador = microprocesador { acumuladorA = unValor }
 
 cargarEnAcumuladorB :: Int -> Instruccion
-cargarEnAcumuladorB unValor microcontrolador = microcontrolador { acumuladorB = unValor }
+cargarEnAcumuladorB unValor microprocesador = microprocesador { acumuladorB = unValor }
 
 swap :: Instruccion
 swap  = incrementarProgramCounter.intercambiarValoresEnAcumuladores 
 
 intercambiarValoresEnAcumuladores :: Instruccion
-intercambiarValoresEnAcumuladores microcontrolador = microcontrolador { acumuladorA = (acumuladorB microcontrolador) , acumuladorB = (acumuladorA microcontrolador)}
+intercambiarValoresEnAcumuladores microprocesador = microprocesador { acumuladorA = (acumuladorB microprocesador) , acumuladorB = (acumuladorA microprocesador)}
 
 add :: Instruccion
 add  = ((incrementarProgramCounter).(vaciarAcumuladorB).(operarContenidosAcumuladoresAB (+)))
 
-operarContenidosAcumuladoresAB :: (Int -> Int -> Int ) -> Microcontrolador -> Microcontrolador
-operarContenidosAcumuladoresAB operacion microcontrolador = microcontrolador { acumuladorA = (operacion (acumuladorA microcontrolador) (acumuladorB microcontrolador)) }
+operarContenidosAcumuladoresAB :: (Int -> Int -> Int ) -> Microprocesador -> Microprocesador
+operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acumuladorA = (operacion (acumuladorA microprocesador) (acumuladorB microprocesador)) }
 
-vaciarAcumuladorB :: Microcontrolador -> Microcontrolador
-vaciarAcumuladorB microcontrolador = microcontrolador { acumuladorB = (acumuladorB microcontrolador) * 0 }
+vaciarAcumuladorB :: Microprocesador -> Microprocesador
+vaciarAcumuladorB microprocesador = microprocesador { acumuladorB = (acumuladorB microprocesador) * 0 }
 
 --Punto 3.3.3.2 Implementar un programa que sume 10 + 22
 -- Aca utilizamos el xt8088
 
--- xt8088 = Microcontrolador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
+-- xt8088 = Microprocesador { nombre = "xt8088" , memoriaDeDatos = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
-funcionSumar10Mas22 :: Microcontrolador -> Microcontrolador
+funcionSumar10Mas22 :: Microprocesador -> Microprocesador
 funcionSumar10Mas22 xt8088 = ((add).(lodV (12)).(intercambiarValoresEnAcumuladores).(lodV 10)) xt8088
 
 --Punto 3.3.4
@@ -78,20 +78,20 @@ funcionSumar10Mas22 xt8088 = ((add).(lodV (12)).(intercambiarValoresEnAcumulador
 --Accion divide 
 
 divide :: Instruccion
-divide microcontrolador     
- | (acumuladorB microcontrolador) /= 0  =  (incrementarProgramCounter.vaciarAcumuladorB.(operarContenidosAcumuladoresAB(div)))microcontrolador
- | otherwise = ((incrementarProgramCounter).(mensajeDeError "DIVISION BY CERO")) microcontrolador
+divide microprocesador     
+ | (acumuladorB microprocesador) /= 0  =  (incrementarProgramCounter.vaciarAcumuladorB.(operarContenidosAcumuladoresAB(div)))microprocesador
+ | otherwise = ((incrementarProgramCounter).(mensajeDeError "DIVISION BY CERO")) microprocesador
 
 mensajeDeError :: String -> Instruccion
-mensajeDeError mensaje microcontrolador = microcontrolador { etiqueta = mensaje }
+mensajeDeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
 
 
 
 str :: Int -> Int -> Instruccion
 str addr valor = ((incrementarProgramCounter).(guardarValorEnMemoria addr valor))
 
-guardarValorEnMemoria :: Int -> Int -> Microcontrolador -> Microcontrolador
-guardarValorEnMemoria addr valor microcontrolador = microcontrolador { memoriaDeDatos = take (addr - 1) (memoriaDeDatos microcontrolador) ++ [valor] ++ drop (addr) (memoriaDeDatos microcontrolador) }
+guardarValorEnMemoria :: Int -> Int -> Microprocesador -> Microprocesador
+guardarValorEnMemoria addr valor microprocesador = microprocesador { memoriaDeDatos = take (addr - 1) (memoriaDeDatos microprocesador) ++ [valor] ++ drop (addr) (memoriaDeDatos microprocesador) }
 
 
 --Accion LOD
@@ -99,8 +99,8 @@ guardarValorEnMemoria addr valor microcontrolador = microcontrolador { memoriaDe
 lod :: Int -> Instruccion
 lod addr = (incrementarProgramCounter.(guardarValorEnAcumuladorA addr))
 
-guardarValorEnAcumuladorA :: Int -> Microcontrolador -> Microcontrolador
-guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA = ((!!) (memoriaDeDatos microcontrolador) (addr-1)) }
+guardarValorEnAcumuladorA :: Int -> Microprocesador -> Microprocesador
+guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA = ((!!) (memoriaDeDatos microprocesador) (addr-1)) }
 
 -- (addr - 1) porque en las listas los sub-indices comienzan por 0
 
@@ -120,7 +120,7 @@ guardarValorEnAcumuladorA addr microcontrolador = microcontrolador { acumuladorA
 
 -- Ejecutar SWAP 
 
-fp20 = Microcontrolador { nombre = "fp20" , memoriaDeDatos = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " , instrucciones = [] }
+fp20 = Microprocesador { nombre = "fp20" , memoriaDeDatos = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 -- Se escribe en la consola: swap fp20 y podemos ver que se intercambian los valores entre el acumulador A y el acumulador B
 
@@ -130,7 +130,7 @@ fp20 = Microcontrolador { nombre = "fp20" , memoriaDeDatos = [] , acumuladorA = 
 
 --Punto 4.3.4.1
 
-at8086 = Microcontrolador { nombre = "at8086" , memoriaDeDatos = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
+at8086 = Microprocesador { nombre = "at8086" , memoriaDeDatos = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , instrucciones = [] }
 
 -- Se escribe en la consola str 2 5 at8086 y vemos que se cumplen las condiciones.
 
@@ -138,8 +138,8 @@ at8086 = Microcontrolador { nombre = "at8086" , memoriaDeDatos = [1,2,3,4,5,6,7,
 
 --Se asigna las posiciones a la memoria de datos del microcontrolador xt8088
 
-asignarPosicionesMemoria :: Microcontrolador -> Microcontrolador
-asignarPosicionesMemoria microcontrolador = microcontrolador { memoriaDeDatos = replicate 1024 0 }
+asignarPosicionesMemoria :: Microprocesador -> Microprocesador
+asignarPosicionesMemoria microprocesador = microprocesador { memoriaDeDatos = replicate 1024 0 }
 
 -- Luego escribimos en la consola el siguiente codigo: ((lod 2).(asignarPosicionesMemoria))xt8088
 
