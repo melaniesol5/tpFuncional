@@ -12,7 +12,8 @@ memoria:: [Int],
 acumuladorA:: Int ,
 acumuladorB:: Int,
 programCounter:: Int ,
-etiqueta:: String
+etiqueta:: String,
+programa:: [Instruccion]
 }deriving (Show)
 
 type Instruccion = Microprocesador -> Microprocesador
@@ -20,12 +21,14 @@ type Instruccion = Microprocesador -> Microprocesador
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " "  }
+xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " }
 
 -- Desarrollar la función NOP
 
 nop :: Instruccion
 nop  = incrementarProgramCounter
+
+
 
 
 incrementarProgramCounter :: Microprocesador -> Microprocesador
@@ -49,24 +52,22 @@ swap :: Instruccion
 swap  = incrementarProgramCounter.intercambiarValoresEnAcumuladores 
 
 intercambiarValoresEnAcumuladores :: Instruccion
-intercambiarValoresEnAcumuladores microprocesador = microprocesador { acumuladorA = (acumuladorB microprocesador) , acumuladorB = (acumuladorA microprocesador)}
+intercambiarValoresEnAcumuladores microprocesador = microprocesador { acumuladorA = acumuladorB microprocesador , acumuladorB = acumuladorA microprocesador}
 
 add :: Instruccion
-add  = ((incrementarProgramCounter).(vaciarAcumuladorB).(operarContenidosAcumuladoresAB (+)))
+add  = incrementarProgramCounter.(operarContenidosAcumuladoresAB (+))
 
 operarContenidosAcumuladoresAB :: (Int -> Int -> Int ) -> Microprocesador -> Microprocesador
-operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acumuladorA = (operacion (acumuladorA microprocesador) (acumuladorB microprocesador)) }
+operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acumuladorA = (operacion (acumuladorA microprocesador) (acumuladorB microprocesador)), acumuladorB=0 }
 
-vaciarAcumuladorB :: Microprocesador -> Microprocesador
-vaciarAcumuladorB microprocesador = microprocesador { acumuladorB = (acumuladorB microprocesador) * 0 }
+
 
 --Punto 3.3.3.2 Implementar un programa que sume 10 + 22
 -- Aca utilizamos el xt8088
 
 -- xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " "  }
 
-funcionSumar10Mas22 :: Microprocesador -> Microprocesador
-funcionSumar10Mas22 xt8088 = (add.(lodv 22).swap.(lodv 10)) xt8088
+-- (add.(lodv 22).swap.(lodv 10)) xt8088
 
 --Punto 3.3.4: Modelar las instrucciones DIV, STR Y LOD
 
@@ -74,8 +75,8 @@ funcionSumar10Mas22 xt8088 = (add.(lodv 22).swap.(lodv 10)) xt8088
 
 divide :: Instruccion
 divide microprocesador     
- | (acumuladorB microprocesador) /= 0  =  (incrementarProgramCounter.vaciarAcumuladorB.(operarContenidosAcumuladoresAB(div)))microprocesador
- | otherwise = ((incrementarProgramCounter).(mensajeError "DIVISION BY ZERO")) microprocesador
+ | (acumuladorB microprocesador) /= 0  =  (incrementarProgramCounter.(operarContenidosAcumuladoresAB(div)))microprocesador
+ | otherwise = (incrementarProgramCounter.(mensajeError "DIVISION BY ZERO")) microprocesador
 
 mensajeError :: String -> Instruccion
 mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
@@ -83,19 +84,19 @@ mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
 --Accion STR 
 
 str :: Int -> Int -> Instruccion
-str addr valor = ((incrementarProgramCounter).(guardarValorEnMemoria addr valor))
+str addr valor = incrementarProgramCounter.(guardarValorEnMemoria addr valor)
 
 guardarValorEnMemoria :: Int -> Int -> Microprocesador -> Microprocesador
-guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria= take (addr - 1) (memoria microprocesador) ++ [valor] ++ drop (addr) (memoria microprocesador) }
+guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria= take (addr - 1) (memoria microprocesador) ++ [valor] ++ drop addr (memoria microprocesador) }
 
 
 --Accion LOD
 
 lod :: Int -> Instruccion
-lod addr = (incrementarProgramCounter.(guardarValorEnAcumuladorA addr))
+lod addr = incrementarProgramCounter.(guardarValorEnAcumuladorA addr)
 
 guardarValorEnAcumuladorA :: Int -> Microprocesador -> Microprocesador
-guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA = ((!!) (memoria microprocesador) (addr-1)) }
+guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA = (memoria microprocesador) !! (addr-1) }
 
 -- (addr - 1) porque en las listas los sub-indices comienzan por 0
 
