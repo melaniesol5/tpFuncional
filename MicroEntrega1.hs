@@ -13,7 +13,6 @@ acumuladorA:: Int ,
 acumuladorB:: Int,
 programCounter:: Int ,
 etiqueta:: String
-instrucciones :: [Instruccion]
 }deriving (Show)
 
 type Instruccion = Microprocesador -> Microprocesador
@@ -21,7 +20,7 @@ type Instruccion = Microprocesador -> Microprocesador
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " "  }
+xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " }
 
 -- Desarrollar la función NOP
 
