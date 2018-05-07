@@ -58,7 +58,7 @@ add :: Instruccion
 add  = incrementarProgramCounter.(operarContenidosAcumuladoresAB (+))
 
 operarContenidosAcumuladoresAB :: (Int -> Int -> Int ) -> Microprocesador -> Microprocesador
-operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acumuladorA = (operacion (acumuladorA microprocesador) (acumuladorB microprocesador)), acumuladorB=0 }
+operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acumuladorA = (operacion (acumuladorA microprocesador) (acumuladorB microprocesador)), acumuladorB=0}
 
 
 
