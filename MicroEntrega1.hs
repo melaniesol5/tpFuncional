@@ -75,7 +75,7 @@ funcionSumar10Mas22 xt8088 = (add.(lodv 22).swap.(lodv 10)) xt8088
 divide :: Instruccion
 divide microprocesador     
  | (acumuladorB microprocesador) /= 0  =  (incrementarProgramCounter.vaciarAcumuladorB.(operarContenidosAcumuladoresAB(div)))microprocesador
- | otherwise = ((incrementarProgramCounter).(mensajeError "DIVISION BY CERO")) microprocesador
+ | otherwise = ((incrementarProgramCounter).(mensajeError "DIVISION BY ZERO")) microprocesador
 
 mensajeError :: String -> Instruccion
 mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
