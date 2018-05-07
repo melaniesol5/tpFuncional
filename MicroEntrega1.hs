@@ -13,6 +13,7 @@ acumuladorA:: Int ,
 acumuladorB:: Int,
 programCounter:: Int ,
 etiqueta:: String
+instrucciones :: [Instruccion]
 }deriving (Show)
 
 type Instruccion = Microprocesador -> Microprocesador
