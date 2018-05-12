@@ -21,13 +21,18 @@ type Instruccion = Microprocesador -> Microprocesador
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " }
+xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [] }
 
 -- Desarrollar la función NOP
 
-nop :: Instruccion
-nop  = incrementarProgramCounter
 
+nop :: Instruccion
+nop  =  ejecutarla id
+
+
+
+ejecutarla :: Instruccion -> Microprocesador -> Microprocesador
+ejecutarla unaFuncion microprocesador = (incrementarProgramCounter.unaFuncion)microprocesador
 
 
 
@@ -41,21 +46,24 @@ incrementarProgramCounter microprocesador = microprocesador { programCounter = (
 
 -- 3.3 - Modelar las instrucciones LODV , SWAP y ADD
 
+
 lodv :: Int -> Instruccion
-lodv unValor  = incrementarProgramCounter.(cargarEnAcumuladorA unValor)
+lodv unValor  =  ejecutarla (cargarEnAcumuladorA unValor) 
 
 
 cargarEnAcumuladorA :: Int -> Instruccion
 cargarEnAcumuladorA unValor microprocesador = microprocesador { acumuladorA = unValor }
 
 swap :: Instruccion
-swap  = incrementarProgramCounter.intercambiarValoresEnAcumuladores 
+swap  = ejecutarla intercambiarValoresEnAcumuladores
+
 
 intercambiarValoresEnAcumuladores :: Instruccion
 intercambiarValoresEnAcumuladores microprocesador = microprocesador { acumuladorA = acumuladorB microprocesador , acumuladorB = acumuladorA microprocesador}
 
 add :: Instruccion
-add  = incrementarProgramCounter.(operarContenidosAcumuladoresAB (+))
+add  = ejecutarla (operarContenidosAcumuladoresAB (+))
+
 
 operarContenidosAcumuladoresAB :: (Int -> Int -> Int ) -> Microprocesador -> Microprocesador
 operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acumuladorA = (operacion (acumuladorA microprocesador) (acumuladorB microprocesador)), acumuladorB=0}
@@ -75,8 +83,10 @@ operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acu
 
 divide :: Instruccion
 divide microprocesador     
- | (acumuladorB microprocesador) /= 0  =  (incrementarProgramCounter.(operarContenidosAcumuladoresAB(div)))microprocesador
- | otherwise = (incrementarProgramCounter.(mensajeError "DIVISION BY ZERO")) microprocesador
+ | (acumuladorB microprocesador) /= 0  =  ejecutarla (operarContenidosAcumuladoresAB(div))microprocesador
+ | otherwise = ejecutarla (mensajeError "DIVISION BY ZERO") microprocesador
+
+
 
 mensajeError :: String -> Instruccion
 mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
@@ -84,7 +94,8 @@ mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
 --Accion STR 
 
 str :: Int -> Int -> Instruccion
-str addr valor = incrementarProgramCounter.(guardarValorEnMemoria addr valor)
+str addr valor = ejecutarla (guardarValorEnMemoria addr valor)
+
 
 guardarValorEnMemoria :: Int -> Int -> Microprocesador -> Microprocesador
 guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria= take (addr - 1) (memoria microprocesador) ++ [valor] ++ drop addr (memoria microprocesador) }
@@ -93,7 +104,8 @@ guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria= ta
 --Accion LOD
 
 lod :: Int -> Instruccion
-lod addr = incrementarProgramCounter.(guardarValorEnAcumuladorA addr)
+lod addr = ejecutarla (guardarValorEnAcumuladorA addr)
+
 
 guardarValorEnAcumuladorA :: Int -> Microprocesador -> Microprocesador
 guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA = (memoria microprocesador) !! (addr-1) }
@@ -120,7 +132,7 @@ guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA =
 --Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 5, acumuladorB = 0, programCounter = 1, etiqueta = " "}
 
 -- Ejecutar SWAP 
-fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " "  }
+fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [] }
 -- Se escribe en la consola: swap fp20 y podemos ver que se intercambian los valores entre el acumulador A y el acumulador B
 --Microprocesador {nombre = "fp20", memoria = [], acumuladorA = 24, acumuladorB = 7, programCounter = 1, etiqueta = " "}
 
@@ -130,7 +142,7 @@ fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acum
 
 
 --PUNTO 4.3.4.1
-at8086 = Microprocesador { nombre = "at8086" , memoria = [1..20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " "  }
+at8086 = Microprocesador { nombre = "at8086" , memoria = [1..20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = []  }
 -- Se escribe en la consola str 2 5 at8086 y vemos que se cumplen las condiciones.
 --Microprocesador {nombre = "at8086", memoria = [1,5,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], acumuladorA = 0, acumuladorB = 0, programCounter = 1, etiqueta = " "}
 
