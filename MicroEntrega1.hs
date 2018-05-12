@@ -32,7 +32,7 @@ nop  =  ejecutarla id
 
 
 ejecutarla :: Instruccion -> Microprocesador -> Microprocesador
-ejecutarla unaFuncion microprocesador = (incrementarProgramCounter.unaFuncion)microprocesador
+ejecutarla unaFuncion  = incrementarProgramCounter.unaFuncion
 
 
 
