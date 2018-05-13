@@ -73,7 +73,7 @@ operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acu
 --Punto 3.3.3.2 Implementar un programa que sume 10 + 22
 -- Aca utilizamos el xt8088
 
--- xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " "  }
+-- xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " ",programa=[]  }
 
 -- (add.(lodv 22).swap.(lodv 10)) xt8088
 
@@ -117,49 +117,36 @@ guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA =
 --  Poniendo el siguiente codigo en la linea de comandos de GHCi, modelamos un programa que divida 2 por 0 y nos de el mensaje de error "DIVISON BY ZERO" ((divide).(lod 1).(swap).(lod (2)).(str 2 0).(str 1 2))xt8088
 
 
-
-
---CASOS DE PRUEBA
-
--- Punto 4.4.1.2
--- Se escribe en la consola el siguiente codigo: ((nop).(nop).(nop))xt8088
---Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 0, acumuladorB = 0, programCounter = 3, etiqueta = " "}
-
-
--- PUNTO 4.4.2.3
--- LODV 5
--- Se escribe en la consola: lodv 5 xt8088 y se cumplen las pre y post condiciones.
---Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 5, acumuladorB = 0, programCounter = 1, etiqueta = " "}
-
--- Ejecutar SWAP 
 fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [] }
--- Se escribe en la consola: swap fp20 y podemos ver que se intercambian los valores entre el acumulador A y el acumulador B
---Microprocesador {nombre = "fp20", memoria = [], acumuladorA = 24, acumuladorB = 7, programCounter = 1, etiqueta = " "}
 
--- Ejecutar funcionSumar10Mas22
--- Se escibre en la consola funcionSumar10Mas22 fp20 y vemos que en acumulador A esta en 32 y el acumulador B en 0
---Microprocesador {nombre = "fp20", memoria = [], acumuladorA = 32, acumuladorB = 0, programCounter = 4, etiqueta = " "}
-
-
---PUNTO 4.3.4.1
 at8086 = Microprocesador { nombre = "at8086" , memoria = [1..20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = []  }
--- Se escribe en la consola str 2 5 at8086 y vemos que se cumplen las condiciones.
---Microprocesador {nombre = "at8086", memoria = [1,5,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], acumuladorA = 0, acumuladorB = 0, programCounter = 1, etiqueta = " "}
 
-
---PUNTO 4.3.4.2
 --Se asigna las posiciones a la memoria de datos del microcontrolador xt8088
 asignarPosicionesMemoria :: Microprocesador -> Microprocesador
 asignarPosicionesMemoria microprocesador = microprocesador { memoria = replicate 1024 0 }
--- Luego escribimos en la consola el siguiente codigo: ((lod 2).asignarPosicionesMemoria)xt8088
---Microprocesador {nombre = "xt8088", memoria = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], acumuladorA = 0, acumuladorB = 0, programCounter = 1, etiqueta = " "}
+
+--ENTREGA 2
+
+--PUNTO 3.1.1: CARGA DE UN PROGRAMA
+cargarUnPrograma :: [Instruccion]->Microprocesador->Microprocesador
+cargarUnPrograma unPrograma microprocesador= Microprocesador{programa=unPrograma}
+--Representar la suma de 10 y 22 
+--programa1= [(lodv 10),swap, (lodv 22), add] 
+--Representar la division de 2 por 0
+--programa2= [(str 1 2),(str 2 0), (lod 2), swap, lod 1, div}
+
+--PUNTO 3.2.2:EJECUCIÓN DE UN PROGRAMA
+--ejecutarUnPrograma microprocesador= foldl (flip ($ microprocesador)) microprocesador (programa microprocesador) 
+
+--PUNTO 3.3.3 : IFNZ
+
+ifnz microprocesador
+  | (/=0).(acumuladorA microprocesador)=ejecutarUnPrograma microprocesador
+  |otherwise= microprocesador
 
 
--- PUNTO 4.3.4.3
--- Escribimos en la consola el siguiente codigo : (divide.(lod 1).swap.(lod 2).(str 2 0).(str 1 2))xt8088
---Microprocesador {nombre = "xt8088", memoria = [2,0], acumuladorA = 2, acumuladorB = 0, programCounter = 6, etiqueta = "DIVISION BY ZERO"}
 
 
--- PUNTO 4.3.4.4
--- Se escribe en la consola: (divide.(lod 1).swap.(lod 2).(str 2 4).(str 1 12))xt8088
---Microprocesador {nombre = "xt8088", memoria = [12,4], acumuladorA = 3, acumuladorB = 0, programCounter = 6, etiqueta = " "}
+
+
+
