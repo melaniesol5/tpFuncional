@@ -144,8 +144,10 @@ ejecutarUnPrograma microprocesador = aplicarInstruccionesAlMicro microprocesador
 
 
 --PUNTO 3.3.3 : IFNZ
-ifnz :: [Instruccion] -> Instruccion
+aplicarInstruccionesAlMicro :: Microprocesador -> Microprocesador
 aplicarInstruccionesAlMicro microprocesador lista  = foldl (flip (($).ejecutarla)) microprocesador lista
+
+ifnz :: [Instruccion] -> Instruccion
 ifnz listaDeInstrucciones microprocesador
     | acumuladorA microprocesador /= 0 = aplicarInstruccionesAlMicro microprocesador listaDeInstrucciones
     |otherwise= microprocesador
