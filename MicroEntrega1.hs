@@ -21,7 +21,7 @@ type Instruccion = Microprocesador -> Microprocesador
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [] }
+xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [(ifnz [(lodv 3),swap])] }
 
 -- Desarrollar la función NOP
 nop :: Instruccion
@@ -107,7 +107,7 @@ guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA =
 
 
 -- Modelado de microprocesador fp20 y microprocesador at8086
-fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [] }
+fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [(ifnz [(lodv 3),swap])] }
 
 at8086 = Microprocesador { nombre = "at8086" , memoria = [1..20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = []  }
 
@@ -137,22 +137,43 @@ Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 0, acumuladorB =
 
 --PUNTO 3.2.2:EJECUCIÓN DE UN PROGRAMA
 at8082 = Microprocesador "at8082"  [] 0 0 0 " " [(str 1 2),(str 2 0), (lodv 0), swap,(lodv 2), divide, (str 3 2), (str 4 3)]
-ejecutarUnPrograma:: Microprocesador->Microprocesador
-ejecutarUnPrograma microprocesador= foldl(flip (($).ejecutarla) ) microprocesador (programa microprocesador) 
+ejecutarUnPrograma:: Microprocesador -> Microprocesador
+ejecutarUnPrograma microprocesador = aplicarInstruccionesAlMicro microprocesador (programa microprocesador) 
 
 
 
 
 --PUNTO 3.3.3 : IFNZ
+ifnz :: [Instruccion] -> Instruccion
 aplicarInstruccionesAlMicro microprocesador lista  = foldl (flip (($).ejecutarla)) microprocesador lista
 ifnz listaDeInstrucciones microprocesador
-    | acumuladorA microprocesador /= 0= aplicarInstruccionesAlMicro microprocesador listaDeInstrucciones
+    | acumuladorA microprocesador /= 0 = aplicarInstruccionesAlMicro microprocesador listaDeInstrucciones
     |otherwise= microprocesador
 
---PUNTO 3.5.5 : MEMORIA ORDENADA
-laMemoriaEstaOrdenada = memoriaOrdenada.memoria
-memoriaOrdenada[]=True
-memoriaOrdenada[_]=True  
-memoriaOrdenada (x:y:xs)= y>=x && memoriaOrdenada xs 
+{- Al ejecutar la instrución IFNZ de las instrucciones LODV 3 y SWAP sobre el microprocesador fp20, que tiene inicialmente 7 en el
+acumulador A y 24 en el acumulador B. El acumulador A debe quedar en 24 , el acumulador en B debe quedar 3 :
 
-microDesorden = Microprocesador "microDesorden" [2,5,1,0,6,9] 0 0 0 " " [] 
+*MicroEntrega1> ejecutarUnPrograma fp20
+Microprocesador {nombre = "fp20", memoria = [], acumuladorA = 24, acumuladorB = 3, programCounter = 2, etiqueta = " ", programa = [<function>,<function>]}
+-}
+
+{- Al ejecutar la instrución IFNZ de las instrucciones LODV 3 y SWAP sobre el microprocesador xt8088 , el acumulador A debe continuar en 0,
+el acumulador B debe continuar en 0 .
+
+*MicroEntrega> ejecutarUnPrograma xt8088
+Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 0, acumuladorB = 0, programCounter = 1, etiqueta = " ", programa = [<function>]}
+
+-}
+
+
+--PUNTO 3.5.5 : MEMORIA ORDENADA
+laMemoriaEstaOrdenada :: Microprocesador -> Bool
+laMemoriaEstaOrdenada = memoriaOrdenada.memoria
+
+memoriaOrdenada :: [Int] -> Bool
+memoriaOrdenada [] = True
+memoriaOrdenada [_] = True  
+memoriaOrdenada (x:y:xs) = y>=x && memoriaOrdenada xs 
+
+
+microDesorden = Microprocesador { nombre = "microDesorden" , memoria = [2,5,1,0,6,9] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [] }
