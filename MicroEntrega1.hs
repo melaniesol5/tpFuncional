@@ -144,7 +144,7 @@ ejecutarUnPrograma microprocesador = aplicarInstruccionesAlMicro microprocesador
 
 
 --PUNTO 3.3.3 : IFNZ
-aplicarInstruccionesAlMicro :: Microprocesador -> Microprocesador
+aplicarInstruccionesAlMicro :: Microprocesador -> [Instruccion] -> Microprocesador
 aplicarInstruccionesAlMicro microprocesador lista  = foldl (flip (($).ejecutarla)) microprocesador lista
 
 ifnz :: [Instruccion] -> Instruccion
