@@ -27,12 +27,14 @@ xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , 
 
 
 nop :: Instruccion
-nop  =  ejecutarla id
+nop  =  id
 
 
 
 ejecutarla :: Instruccion -> Microprocesador -> Microprocesador
-ejecutarla unaFuncion  = incrementarProgramCounter.unaFuncion
+ejecutarla unaFuncion microprocesador  
+    |etiqueta microprocesador /= " "  = microprocesador
+    |otherwise=(incrementarProgramCounter.unaFuncion) microprocesador 
 
 
 
@@ -48,21 +50,21 @@ incrementarProgramCounter microprocesador = microprocesador { programCounter = (
 
 
 lodv :: Int -> Instruccion
-lodv unValor  =  ejecutarla (cargarEnAcumuladorA unValor) 
+lodv unValor  =  cargarEnAcumuladorA unValor
 
 
 cargarEnAcumuladorA :: Int -> Instruccion
 cargarEnAcumuladorA unValor microprocesador = microprocesador { acumuladorA = unValor }
 
 swap :: Instruccion
-swap  = ejecutarla intercambiarValoresEnAcumuladores
+swap  = intercambiarValoresEnAcumuladores
 
 
 intercambiarValoresEnAcumuladores :: Instruccion
 intercambiarValoresEnAcumuladores microprocesador = microprocesador { acumuladorA = acumuladorB microprocesador , acumuladorB = acumuladorA microprocesador}
 
 add :: Instruccion
-add  = ejecutarla (operarContenidosAcumuladoresAB (+))
+add  = operarContenidosAcumuladoresAB (+)
 
 
 operarContenidosAcumuladoresAB :: (Int -> Int -> Int ) -> Microprocesador -> Microprocesador
@@ -83,8 +85,8 @@ operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acu
 
 divide :: Instruccion
 divide microprocesador     
- | (acumuladorB microprocesador) /= 0  =  ejecutarla (operarContenidosAcumuladoresAB(div))microprocesador
- | otherwise = ejecutarla (mensajeError "DIVISION BY ZERO") microprocesador
+ | (acumuladorB microprocesador) /= 0  =  (operarContenidosAcumuladoresAB(div)) microprocesador
+ | otherwise = (mensajeError "DIVISION BY ZERO") microprocesador
 
 
 
@@ -94,7 +96,7 @@ mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
 --Accion STR 
 
 str :: Int -> Int -> Instruccion
-str addr valor = ejecutarla (guardarValorEnMemoria addr valor)
+str addr valor =  guardarValorEnMemoria addr valor
 
 
 guardarValorEnMemoria :: Int -> Int -> Microprocesador -> Microprocesador
@@ -104,7 +106,7 @@ guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria= ta
 --Accion LOD
 
 lod :: Int -> Instruccion
-lod addr = ejecutarla (guardarValorEnAcumuladorA addr)
+lod addr =  guardarValorEnAcumuladorA addr
 
 
 guardarValorEnAcumuladorA :: Int -> Microprocesador -> Microprocesador
@@ -129,24 +131,30 @@ asignarPosicionesMemoria microprocesador = microprocesador { memoria = replicate
 
 --PUNTO 3.1.1: CARGA DE UN PROGRAMA
 cargarUnPrograma :: [Instruccion]->Microprocesador->Microprocesador
-cargarUnPrograma unPrograma microprocesador= Microprocesador{programa=unPrograma}
+cargarUnPrograma unPrograma microprocesador= microprocesador{programa=unPrograma}
 --Representar la suma de 10 y 22 
 --programa1= [(lodv 10),swap, (lodv 22), add] 
 --Representar la division de 2 por 0
---programa2= [(str 1 2),(str 2 0), (lod 2), swap, lod 1, div}
+--programa2= [(str 1 2),(str 2 0), (lod 2), swap, lod 1, div]
 
 --PUNTO 3.2.2:EJECUCIÓN DE UN PROGRAMA
---ejecutarUnPrograma microprocesador= foldl (flip ($ microprocesador)) microprocesador (programa microprocesador) 
+at8082 = Microprocesador "at8082"  [] 0 0 0 " " [(str 1 2),(str 2 0), (lodv 0), swap,(lodv 2), divide, (str 3 2), (str 4 3)]
+ejecutarUnPrograma:: Microprocesador->Microprocesador
+ejecutarUnPrograma microprocesador= foldl(flip (($).ejecutarla) ) microprocesador (programa microprocesador) 
+
+
+
 
 --PUNTO 3.3.3 : IFNZ
+aplicarInstruccionesAlMicro microprocesador lista  = foldl (flip (($).ejecutarla)) microprocesador lista
+ifnz listaDeInstrucciones microprocesador
+    | acumuladorA microprocesador /= 0= aplicarInstruccionesAlMicro microprocesador listaDeInstrucciones
+    |otherwise= microprocesador
 
-ifnz microprocesador
-  | (/=0).(acumuladorA microprocesador)=ejecutarUnPrograma microprocesador
-  |otherwise= microprocesador
+--PUNTO 3.5.5 : MEMORIA ORDENADA
+laMemoriaEstaOrdenada = memoriaOrdenada.memoria
+memoriaOrdenada[]=True
+memoriaOrdenada[_]=True  
+memoriaOrdenada (x:y:xs)= y>=x && memoriaOrdenada xs 
 
-
-
-
-
-
-
+microDesorden = Microprocesador "microDesorden" [2,5,1,0,6,9] 0 0 0 " " [] 
