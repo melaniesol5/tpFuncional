@@ -24,18 +24,13 @@ type Instruccion = Microprocesador -> Microprocesador
 xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [] }
 
 -- Desarrollar la función NOP
-
-
 nop :: Instruccion
 nop  =  id
-
-
 
 ejecutarla :: Instruccion -> Microprocesador -> Microprocesador
 ejecutarla unaFuncion microprocesador  
     |etiqueta microprocesador /= " "  = microprocesador
     |otherwise=(incrementarProgramCounter.unaFuncion) microprocesador 
-
 
 
 incrementarProgramCounter :: Microprocesador -> Microprocesador
@@ -81,8 +76,7 @@ operarContenidosAcumuladoresAB operacion microprocesador = microprocesador { acu
 
 --Punto 3.3.4: Modelar las instrucciones DIV, STR Y LOD
 
---Accion divide 
-
+-- Instrucción DIVIDE
 divide :: Instruccion
 divide microprocesador     
  | (acumuladorB microprocesador) /= 0  =  (operarContenidosAcumuladoresAB(div)) microprocesador
@@ -93,8 +87,7 @@ divide microprocesador
 mensajeError :: String -> Instruccion
 mensajeError mensaje microprocesador = microprocesador { etiqueta = mensaje }
 
---Accion STR 
-
+--Instrucción STR 
 str :: Int -> Int -> Instruccion
 str addr valor =  guardarValorEnMemoria addr valor
 
@@ -103,25 +96,22 @@ guardarValorEnMemoria :: Int -> Int -> Microprocesador -> Microprocesador
 guardarValorEnMemoria addr valor microprocesador = microprocesador { memoria= take (addr - 1) (memoria microprocesador) ++ [valor] ++ drop addr (memoria microprocesador) }
 
 
---Accion LOD
-
+-- Instrucción LOD
 lod :: Int -> Instruccion
 lod addr =  guardarValorEnAcumuladorA addr
-
 
 guardarValorEnAcumuladorA :: Int -> Microprocesador -> Microprocesador
 guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA = (memoria microprocesador) !! (addr-1) }
 
 -- (addr - 1) porque en las listas los sub-indices comienzan por 0
 
--- PUNTO 3.4.4.2
 
---  Poniendo el siguiente codigo en la linea de comandos de GHCi, modelamos un programa que divida 2 por 0 y nos de el mensaje de error "DIVISON BY ZERO" ((divide).(lod 1).(swap).(lod (2)).(str 2 0).(str 1 2))xt8088
-
-
+-- Modelado de microprocesador fp20 y microprocesador at8086
 fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [] }
 
 at8086 = Microprocesador { nombre = "at8086" , memoria = [1..20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = []  }
+
+
 
 --Se asigna las posiciones a la memoria de datos del microcontrolador xt8088
 asignarPosicionesMemoria :: Microprocesador -> Microprocesador
@@ -132,10 +122,18 @@ asignarPosicionesMemoria microprocesador = microprocesador { memoria = replicate
 --PUNTO 3.1.1: CARGA DE UN PROGRAMA
 cargarUnPrograma :: [Instruccion]->Microprocesador->Microprocesador
 cargarUnPrograma unPrograma microprocesador= microprocesador{programa=unPrograma}
+
 --Representar la suma de 10 y 22 
 --programa1= [(lodv 10),swap, (lodv 22), add] 
+{- MicroEntrega1 > cargarUnPrograma [(lodv 10),swap, (lodv 22), add] fp20
+Microprocesador {nombre = "fp20", memoria = [], acumuladorA = 7, acumuladorB = 24, programCounter = 0, etiqueta = " ", programa = [<function>,<function>,<function>,<function>]}
+-}
+
 --Representar la division de 2 por 0
---programa2= [(str 1 2),(str 2 0), (lod 2), swap, lod 1, div]
+--programa2= [(str 1 2),(str 2 0), (lod 2), swap, lod 1, divide]
+{- *MicroEntrega1 > cargarUnPrograma [(str 1 2),(str 2 0), (lod 2), swap, (lod 1), divide] xt8088
+Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 0, acumuladorB = 0, programCounter = 0, etiqueta = " ", programa = [<function>,<function>,<function>,<function>,<function>,<function>]}
+-}
 
 --PUNTO 3.2.2:EJECUCIÓN DE UN PROGRAMA
 at8082 = Microprocesador "at8082"  [] 0 0 0 " " [(str 1 2),(str 2 0), (lodv 0), swap,(lodv 2), divide, (str 3 2), (str 4 3)]
