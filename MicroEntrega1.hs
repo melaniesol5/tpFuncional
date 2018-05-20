@@ -179,3 +179,18 @@ memoriaOrdenada (x:y:xs) = y>=x && memoriaOrdenada xs
 
 
 microDesorden = Microprocesador { nombre = "microDesorden" , memoria = [2,5,1,0,6,9] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [] }
+
+--PUNTO 3.6.6 : MEMORIA INFINITA
+
+xt8000 = Microprocesador { nombre = "xt8000" , memoria = [0..] , acumuladorA = 0 , acumuladorB = 0 , programCounter = 0 , etiqueta = " " , programa = [] }
+
+{- Modelamos un microprocesador llamado xt8000 con memoria infinita iniciada en 0 : xt8000 = Microprocesador { nombre = "xt8000" , memoria = [0..] , acumuladorA = 0 , acumuladorB = 0 , programCounter = 0 , etiqueta = " " , programa = [] }
+   Escribimos en la consola el siguiente codigo: (ejecutarUnPrograma.(cargarUnPrograma [(lodv 12),swap,(lodv 22),add]))xt8000
+   Luego de ejecutar el codigo, nos aparece en consola como se va cargando ilimitadamente la memoria de datos. Sin embargo realizara las instrucciones cargadas en el programa ya que las instrucciones no necesitan del uso de memoria para 
+   operar con los valores determinados.
+-}
+
+{- Escribimos en la consola el siguiente codigo: memoriaOrdenada (memoria xt8000)
+Observamos que el programa ghci no nos devuelve ningun resultado, esto se debe a que nuestra funcion memoriaOrdenada analiza para aquellas listas que posean cabeza y cola. No para listas infinitas (cabeza pero sin 
+cola)
+-}
