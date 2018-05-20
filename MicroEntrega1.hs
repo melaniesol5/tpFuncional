@@ -21,7 +21,7 @@ type Instruccion = Microprocesador -> Microprocesador
 
 -- 3.1- Modelar un procesador xt 8088
 
-xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [(ifnz [(lodv 3),swap])] }
+xt8088 = Microprocesador { nombre = "xt8088" , memoria = [] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = [] }
 
 -- Desarrollar la función NOP
 nop :: Instruccion
@@ -107,7 +107,7 @@ guardarValorEnAcumuladorA addr microprocesador = microprocesador { acumuladorA =
 
 
 -- Modelado de microprocesador fp20 y microprocesador at8086
-fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [(ifnz [(lodv 3),swap])] }
+fp20 = Microprocesador { nombre = "fp20" , memoria = [] , acumuladorA = 7 , acumuladorB = 24, programCounter = 0 , etiqueta = " " ,programa = [] }
 
 at8086 = Microprocesador { nombre = "at8086" , memoria = [1..20] , acumuladorA = 0 , acumuladorB = 0, programCounter = 0 , etiqueta = " " , programa = []  }
 
@@ -150,7 +150,7 @@ aplicarInstruccionesAlMicro microprocesador lista  = foldl (flip (($).ejecutarla
 ifnz :: [Instruccion] -> Instruccion
 ifnz listaDeInstrucciones microprocesador
     | acumuladorA microprocesador /= 0 = aplicarInstruccionesAlMicro microprocesador listaDeInstrucciones
-    |otherwise= microprocesador
+    | otherwise= microprocesador
 
 {- Al ejecutar la instrución IFNZ de las instrucciones LODV 3 y SWAP sobre el microprocesador fp20, que tiene inicialmente 7 en el
 acumulador A y 24 en el acumulador B. El acumulador A debe quedar en 24 , el acumulador en B debe quedar 3 :
