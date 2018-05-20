@@ -167,6 +167,14 @@ Microprocesador {nombre = "xt8088", memoria = [], acumuladorA = 0, acumuladorB =
 
 -}
 
+--PUNTO 3.4.4 : DEPURACION DE UN PROGRAMA
+
+depurarUnPrograma :: [Instruccion] -> Microprocesador -> [Microprocesador -> Microprocesador]
+depurarUnPrograma listaDeInstrucciones microprocesador = filter ( \ f -> not(dejaAcumuladoresYContadoresEn0 (f microprocesador))) (programa (cargarUnPrograma listaDeInstrucciones microprocesador))
+
+dejaAcumuladoresYContadoresEn0 :: Microprocesador -> Bool
+dejaAcumuladoresYContadoresEn0 microprocesador = (sum (memoria microprocesador) == 0 ) && (acumuladorB microprocesador == 0 ) && (acumuladorA microprocesador == 0 )
+
 
 --PUNTO 3.5.5 : MEMORIA ORDENADA
 laMemoriaEstaOrdenada :: Microprocesador -> Bool
