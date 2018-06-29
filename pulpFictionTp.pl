@@ -73,6 +73,12 @@ saleCon(Persona,OtraPersona),
 not(saleCon(Persona,TerceraPersona)).
 /* multiples respuesta ,si bien dá marsellus,pumkin,mia,honeyBunny, bianca, charo , pero repetidas veces.*/ 
 
+%5 ACATA ORDEN
+acataOrden(Empleador,Empleado2):-
+trabajaPara(Empleador,Empleado1),
+acataOrden(Empleado1,Empleado2),
+Empleado1\=Empleado2.
+
 
 
 % ------------------------------------------------ SEGUNDA PARTE ------------------------------------------------
