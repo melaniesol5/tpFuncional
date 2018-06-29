@@ -110,3 +110,11 @@ CantidadDeRespeto is CantidadDePeliculas * (10 / 100).
 
 tipoDeOcupacion(mafioso(resuelveProblemas),10).
 tipoDeOcupacion(mafioso(capo),20).
+
+
+
+
+
+
+
+--PRUEBA -- BORRAR ESTO
