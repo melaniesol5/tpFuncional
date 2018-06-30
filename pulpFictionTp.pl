@@ -75,9 +75,18 @@ not(saleCon(Persona,TerceraPersona)).
 
 %5- ACATA ORDEN
 
+/*Caso Base */
+acataOrden(Empleador,Empleado):-
+  trabajaPara(Empleador,Empleado).
+/* Caso Recursivo */
 acataOrden(Empleador,Empleado2):-
-trabajaPara(Empleador,Empleado1),
-acataOrden(Empleado1,Empleado2).
+  trabajaPara(Empleador,EmpleadoIntermedio),
+  acataOrden(EmpleadoIntermedio,Empleado2).
+  
+/* La clausula es recursiva. El caso base aparece en primer lugar porque existe la situacion donde el empleado solo responde 
+a un empleador (george acata ordenes solamente y directamente de bianca y charo) y luego el caso recursivo donde el empleado
+responde a un empleador indirectamente por medio de otros empleados (marsellus posee empleados que a la vez son jefes de otros empleados)
+*/
 
 
 % ------------------------------------------------ SEGUNDA PARTE ------------------------------------------------
