@@ -125,6 +125,16 @@ CantidadDeRespeto is CantidadDePeliculas * (10 / 100).
 tipoDeOcupacion(mafioso(resuelveProblemas),10).
 tipoDeOcupacion(mafioso(capo),20).
 
+% 5- Mas Atareado
+
+masAtareado(Personaje):-
+	personaje(Personaje,_),
+	cantidadEncargos(Personaje,CantidadDeEncargos),
+	forall(personaje(OtroPersonaje,_),(cantidadEncargos(OtroPersonaje,OtraCantidadDeEncargos),CantidadDeEncargos >= OtraCantidadDeEncargos)).
+	
+cantidadEncargos(Personaje,CantidadDeEncargos):-
+	findall(Personaje,encargo(_,Personaje,_),ListaDeEncargos),
+	length(ListaDeEncargos,CantidadDeEncargos).
 
 
 
