@@ -65,13 +65,10 @@ pareja(OtraPersona,Persona).
 
 
 %4 - FIDELIDAD
-esFiel(Persona) :-
-persona(Persona),
-persona(OtraPersona),
-persona(TerceraPersona),
-saleCon(Persona,OtraPersona),
-not(saleCon(Persona,TerceraPersona)).
-/* multiples respuesta ,si bien dá marsellus,pumkin,mia,honeyBunny, bianca, charo , pero repetidas veces.*/ 
+esFiel(Personaje):-
+saleCon(Personaje, Alguien),
+not((saleCon(Personaje,Alguien), saleCon(Personaje, AlguienMas), Alguien\=AlguienMas)).
+
 
 %5- ACATA ORDEN
 
