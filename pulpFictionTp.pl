@@ -106,6 +106,22 @@ trabajaPara(Jefe,Persona),
 personaje(Jefe,Ocupacion),
 realizaActividadPeligrosa(Ocupacion).
 
+% 2- San Cayetano
+
+sonAmigos(Persona,OtraPersona):-
+	amigo(Persona,OtraPersona).
+sonAmigos(Persona,OtraPersona):-
+	amigo(OtraPersona,Persona).
+
+sanCayetano(Personaje):-
+	personaje(Personaje,_),
+	encargo(Personaje,Encargado,_),
+	sonAmigos(Personaje,Encargado).
+sanCayetano(Personaje):-
+	personaje(Personaje,_),
+	encargo(Personaje,Encargado,_),
+	acataOrden(Encargado,Personaje).
+
 % 3- NIVEL DE RESPETO
 
 nivelDeRespeto(vincent,15).
