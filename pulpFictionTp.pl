@@ -143,11 +143,16 @@ tipoDeOcupacion(mafioso(capo),20).
 masAtareado(Personaje):-
 	personaje(Personaje,_),
 	cantidadEncargos(Personaje,CantidadDeEncargos),
-	forall(personaje(OtroPersonaje,_),(cantidadEncargos(OtroPersonaje,OtraCantidadDeEncargos),CantidadDeEncargos >= OtraCantidadDeEncargos)).
+	forall(personaje(OtroPersonaje,_),tieneMasEncargos(OtroPersonaje,CantidadDeEncargos)).
 	
 cantidadEncargos(Personaje,CantidadDeEncargos):-
 	findall(Personaje,encargo(_,Personaje,_),ListaDeEncargos),
 	length(ListaDeEncargos,CantidadDeEncargos).
+	
+tieneMasEncargos(OtroPersonaje,CantidadDeEncargos):-
+	cantidadEncargos(OtroPersonaje,OtraCantidadDeEncargos),
+	CantidadDeEncargos >= OtraCantidadDeEncargos.
+
 
 
 
