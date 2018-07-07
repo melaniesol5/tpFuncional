@@ -106,19 +106,21 @@ tieneJefePeligroso(Persona):-
 
 % 2- San Cayetano
 
+sanCayetano(Personaje):-
+	encargo(Personaje,_,_),
+	forall(sonCercano(Personaje,Encargado),encargo(Personaje,Encargado,_)).
+
+sonCercano(Personaje,Encargado):-
+	sonAmigos(Personaje,Encargado).
+sonCercano(Personaje,Encargado):-
+	acataOrden(Personaje,Encargado).
+	
 sonAmigos(Persona,OtraPersona):-
 	amigo(Persona,OtraPersona).
 sonAmigos(Persona,OtraPersona):-
 	amigo(OtraPersona,Persona).
-
-sanCayetano(Personaje):-
-	personaje(Personaje,_),
-	encargo(Personaje,Encargado,_),
-	sonAmigos(Personaje,Encargado).
-sanCayetano(Personaje):-
-	personaje(Personaje,_),
-	encargo(Personaje,Encargado,_),
-	acataOrden(Encargado,Personaje).
+	
+% Si bien da que es bernardo, aparece 3 veces por lo que dijo la ultima vez el ayudante sobre todos los posibles valores que hagan verdadera la regla
 
 % 3- NIVEL DE RESPETO
 
