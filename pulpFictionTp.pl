@@ -135,7 +135,19 @@ tipoDeOcupacion(actriz(ListaDePeliculas),NivelDeRespeto):-
 tipoDeOcupacion(mafioso(resuelveProblemas),10).
 tipoDeOcupacion(mafioso(capo),20).
 
-% 5- Mas Atareado
+% 4 - RESPETABILIDAD
+esRespetable(Personaje):-
+nivelDeRespeto(Personaje,NivelDeRespeto),
+NivelDeRespeto > 9.
+
+respetabilidad(Respetables,NoRespetables):-
+findall(Personaje,personaje(Personaje,_),ListaDePersonajes),
+length(ListaDePersonajes,CantidadDePersonajes),
+findall(Personaje,esRespetable(Personaje),ListaDeRespetables),
+length(ListaDeRespetables,Respetables),
+NoRespetables is (CantidadDePersonajes - Respetables).
+
+% 5- MAS ATAREADO
 
 masAtareado(Personaje):-
 	personaje(Personaje,_),
