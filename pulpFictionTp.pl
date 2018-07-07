@@ -90,21 +90,19 @@ responde a un empleador indirectamente por medio de otros empleados (marsellus p
 
 % 1- ES PELIGROSO
 
-esPeligroso(Persona) :-
-personaje(Persona,TipoDeOcupacion),
-realizaActividadPeligrosa(TipoDeOcupacion).
-
-esPeligroso(Persona) :-
-tieneJefePeligroso(Persona).
+esPeligroso(Persona):-
+	personaje(Persona,TipoDeOcupacion),
+	realizaActividadPeligrosa(TipoDeOcupacion).
+esPeligroso(Persona):-
+	tieneJefePeligroso(Persona).
 
 realizaActividadPeligrosa(mafioso(maton)).
-realizaActividadPeligrosa(ladron(Actividades)) :-
-member(licorerias,Actividades).
+realizaActividadPeligrosa(ladron(LugaresQueRoba)):-
+	member(licorerias,LugaresQueRoba).
 
-tieneJefePeligroso(Persona) :-
-trabajaPara(Jefe,Persona),
-personaje(Jefe,Ocupacion),
-realizaActividadPeligrosa(Ocupacion).
+tieneJefePeligroso(Persona):-
+	acataOrden(Jefe,Persona),
+	esPeligroso(Jefe).
 
 % 2- San Cayetano
 
@@ -125,16 +123,13 @@ sanCayetano(Personaje):-
 % 3- NIVEL DE RESPETO
 
 nivelDeRespeto(vincent,15).
-nivelDeRespeto(Persona,NivelDeRespeto) :-
-personaje(Persona,Tipo),
-findall(CantidadDeRespeto,tipoDeOcupacion(Tipo,CantidadDeRespeto),CantidadDeRespetoTotal),
-sumlist(CantidadDeRespetoTotal,NivelDeRespeto).
+nivelDeRespeto(Persona,NivelDeRespeto):-
+	personaje(Persona,Tipo),
+	tipoDeOcupacion(Tipo,NivelDeRespeto).
 
-
-tipoDeOcupacion(actriz(ListaDePeliculas),CantidadDeRespeto) :-
-length(ListaDePeliculas,CantidadDePeliculas),
-CantidadDeRespeto is CantidadDePeliculas * (10 / 100).
-
+tipoDeOcupacion(actriz(ListaDePeliculas),NivelDeRespeto):-
+	length(ListaDePeliculas,CantidadDePeliculas),
+	NivelDeRespeto is CantidadDePeliculas / 10.
 tipoDeOcupacion(mafioso(resuelveProblemas),10).
 tipoDeOcupacion(mafioso(capo),20).
 
