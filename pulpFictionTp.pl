@@ -90,17 +90,17 @@ responde a un empleador indirectamente por medio de otros empleados (marsellus p
 
 % 1- ES PELIGROSO
 
-esPeligroso(Persona) :-
-personaje(Persona,TipoDeOcupacion),
-realizaActividadPeligrosa(TipoDeOcupacion).
-
-esPeligroso(Persona) :-
-tieneJefePeligroso(Persona).
+esPeligroso(Persona):-
+	personaje(Persona,TipoDeOcupacion),
+	realizaActividadPeligrosa(TipoDeOcupacion).
+esPeligroso(Persona):-
+	tieneJefePeligroso(Persona).
 
 realizaActividadPeligrosa(mafioso(maton)).
-realizaActividadPeligrosa(ladron(Actividades)) :-
-member(licorerias,Actividades).
+realizaActividadPeligrosa(ladron(LugaresQueRoba)):-
+	member(licorerias,LugaresQueRoba).
 
+<<<<<<< HEAD
 tieneJefePeligroso(Persona) :-
 trabajaPara(Jefe,Persona),
 esPeligroso(Jefe).
@@ -146,20 +146,74 @@ findall(Personaje, esRespetable(Personaje), PersonajesRespetables),
 length(PersonajesRespetables,CantidadRespetables),
 findall(Personaje, noEsRespetable(Personaje), PersonajesNoRespetables),
 length(PersonajesNoRespetables,CantidadNoRespetables).
+=======
+tieneJefePeligroso(Persona):-
+	acataOrden(Jefe,Persona),
+	esPeligroso(Jefe).
 
+% 2- San Cayetano
 
+sanCayetano(Personaje):-
+	encargo(Personaje,_,_),
+	forall(sonCercano(Personaje,Encargado),encargo(Personaje,Encargado,_)).
 
+sonCercano(Personaje,Encargado):-
+	sonAmigos(Personaje,Encargado).
+sonCercano(Personaje,Encargado):-
+	acataOrden(Personaje,Encargado).
+	
+sonAmigos(Persona,OtraPersona):-
+	amigo(Persona,OtraPersona).
+sonAmigos(Persona,OtraPersona):-
+	amigo(OtraPersona,Persona).
+	
+% Si bien da que es bernardo, aparece 3 veces por lo que dijo la ultima vez el ayudante sobre todos los posibles valores que hagan verdadera la regla
+>>>>>>> 2d9d2ee4eb4d172f5a112929791a02d31473050f
 
-% 5- Mas Atareado
+% 3- NIVEL DE RESPETO
+
+<<<<<<< HEAD
+
+=======
+nivelDeRespeto(vincent,15).
+nivelDeRespeto(Persona,NivelDeRespeto):-
+	personaje(Persona,Tipo),
+	tipoDeOcupacion(Tipo,NivelDeRespeto).
+
+tipoDeOcupacion(actriz(ListaDePeliculas),NivelDeRespeto):-
+	length(ListaDePeliculas,CantidadDePeliculas),
+	NivelDeRespeto is CantidadDePeliculas / 10.
+tipoDeOcupacion(mafioso(resuelveProblemas),10).
+tipoDeOcupacion(mafioso(capo),20).
+>>>>>>> 2d9d2ee4eb4d172f5a112929791a02d31473050f
+
+% 4 - RESPETABILIDAD
+esRespetable(Personaje):-
+nivelDeRespeto(Personaje,NivelDeRespeto),
+NivelDeRespeto > 9.
+
+respetabilidad(Respetables,NoRespetables):-
+findall(Personaje,personaje(Personaje,_),ListaDePersonajes),
+length(ListaDePersonajes,CantidadDePersonajes),
+findall(Personaje,esRespetable(Personaje),ListaDeRespetables),
+length(ListaDeRespetables,Respetables),
+NoRespetables is (CantidadDePersonajes - Respetables).
+
+% 5- MAS ATAREADO
 
 masAtareado(Personaje):-
 	personaje(Personaje,_),
 	cantidadEncargos(Personaje,CantidadDeEncargos),
-	forall(personaje(OtroPersonaje,_),(cantidadEncargos(OtroPersonaje,OtraCantidadDeEncargos),CantidadDeEncargos >= OtraCantidadDeEncargos)).
+	forall(personaje(OtroPersonaje,_),tieneMasEncargos(OtroPersonaje,CantidadDeEncargos)).
 	
 cantidadEncargos(Personaje,CantidadDeEncargos):-
 	findall(Personaje,encargo(_,Personaje,_),ListaDeEncargos),
 	length(ListaDeEncargos,CantidadDeEncargos).
+	
+tieneMasEncargos(OtroPersonaje,CantidadDeEncargos):-
+	cantidadEncargos(OtroPersonaje,OtraCantidadDeEncargos),
+	CantidadDeEncargos >= OtraCantidadDeEncargos.
+
 
 
 
