@@ -76,9 +76,9 @@ not((saleCon(Personaje,Alguien), saleCon(Personaje, AlguienMas), Alguien\=Alguie
 acataOrden(Empleador,Empleado):-
   trabajaPara(Empleador,Empleado).
 /* Caso Recursivo */
-acataOrden(Empleador,Empleado2):-
+acataOrden(Empleador,Empleado):-
   trabajaPara(Empleador,EmpleadoIntermedio),
-  acataOrden(EmpleadoIntermedio,Empleado2).
+  acataOrden(EmpleadoIntermedio,Empleado).
   
 /* La clausula es recursiva. El caso base aparece en primer lugar porque existe la situacion donde el empleado solo responde 
 a un empleador (george acata ordenes solamente y directamente de bianca y charo) y luego el caso recursivo donde el empleado
@@ -103,24 +103,52 @@ member(licorerias,Actividades).
 
 tieneJefePeligroso(Persona) :-
 trabajaPara(Jefe,Persona),
-personaje(Jefe,Ocupacion),
-realizaActividadPeligrosa(Ocupacion).
+esPeligroso(Jefe).
 
+% 2-SAN CAYETANO
+sanCayetano(Persona):-
+   encargo(Persona,_,_),
+   forall(tieneCerca(Persona,OtraPersona), encargo(Persona,OtraPersona,_)).
+
+tieneCerca(Persona,OtraPersona):-
+   amigo(Persona,OtraPersona).
+tieneCerca(Persona,OtraPersona):-
+   amigo(OtraPersona,Persona).
+tieneCerca(Persona,OtraPersona):-
+   trabajaPara(OtraPersona,Persona).
+tieneCerca(Persona,OtraPersona):-
+   trabajaPara(Persona,OtraPersona).
+   
 % 3- NIVEL DE RESPETO
 
-nivelDeRespeto(vincent,15).
-nivelDeRespeto(Persona,NivelDeRespeto) :-
-personaje(Persona,Tipo),
-findall(CantidadDeRespeto,tipoDeOcupacion(Tipo,CantidadDeRespeto),CantidadDeRespetoTotal),
-sumlist(CantidadDeRespetoTotal,NivelDeRespeto).
+nivelRespeto(vincent,15).
+nivelRespeto(Personaje,Nivel) :-
+personaje(Personaje,Ocupacion),
+   ocupacion(Ocupacion, Nivel).
+   
+
+ocupacion(mafioso(resuelveProblemas),10).
+ocupacion(mafioso(capo),20).
+ocupacion(actriz(Peliculas),Nivel):-
+length(Peliculas,Cantidad),
+Nivel is Cantidad/10.
+
+esRespetable(Personaje):-
+nivelRespeto(Personaje,Nivel),
+Nivel > 9.
+
+noEsRespetable(Personaje):-
+personaje(Personaje,_),
+not((esRespetable(Personaje))).
+
+respetabilidad(CantidadRespetables,CantidadNoRespetables):-
+findall(Personaje, esRespetable(Personaje), PersonajesRespetables),
+length(PersonajesRespetables,CantidadRespetables),
+findall(Personaje, noEsRespetable(Personaje), PersonajesNoRespetables),
+length(PersonajesNoRespetables,CantidadNoRespetables).
 
 
-tipoDeOcupacion(actriz(ListaDePeliculas),CantidadDeRespeto) :-
-length(ListaDePeliculas,CantidadDePeliculas),
-CantidadDeRespeto is CantidadDePeliculas * (10 / 100).
 
-tipoDeOcupacion(mafioso(resuelveProblemas),10).
-tipoDeOcupacion(mafioso(capo),20).
 
 % 5- Mas Atareado
 
