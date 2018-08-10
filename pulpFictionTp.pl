@@ -100,58 +100,12 @@ realizaActividadPeligrosa(mafioso(maton)).
 realizaActividadPeligrosa(ladron(LugaresQueRoba)):-
 	member(licorerias,LugaresQueRoba).
 
-<<<<<<< HEAD
+
 tieneJefePeligroso(Persona) :-
 trabajaPara(Jefe,Persona),
 esPeligroso(Jefe).
 
-% 2-SAN CAYETANO
-sanCayetano(Persona):-
-   encargo(Persona,_,_),
-   forall(tieneCerca(Persona,OtraPersona), encargo(Persona,OtraPersona,_)).
-
-tieneCerca(Persona,OtraPersona):-
-   amigo(Persona,OtraPersona).
-tieneCerca(Persona,OtraPersona):-
-   amigo(OtraPersona,Persona).
-tieneCerca(Persona,OtraPersona):-
-   trabajaPara(OtraPersona,Persona).
-tieneCerca(Persona,OtraPersona):-
-   trabajaPara(Persona,OtraPersona).
-   
-% 3- NIVEL DE RESPETO
-
-nivelRespeto(vincent,15).
-nivelRespeto(Personaje,Nivel) :-
-personaje(Personaje,Ocupacion),
-   ocupacion(Ocupacion, Nivel).
-   
-
-ocupacion(mafioso(resuelveProblemas),10).
-ocupacion(mafioso(capo),20).
-ocupacion(actriz(Peliculas),Nivel):-
-length(Peliculas,Cantidad),
-Nivel is Cantidad/10.
-
-esRespetable(Personaje):-
-nivelRespeto(Personaje,Nivel),
-Nivel > 9.
-
-noEsRespetable(Personaje):-
-personaje(Personaje,_),
-not((esRespetable(Personaje))).
-
-respetabilidad(CantidadRespetables,CantidadNoRespetables):-
-findall(Personaje, esRespetable(Personaje), PersonajesRespetables),
-length(PersonajesRespetables,CantidadRespetables),
-findall(Personaje, noEsRespetable(Personaje), PersonajesNoRespetables),
-length(PersonajesNoRespetables,CantidadNoRespetables).
-=======
-tieneJefePeligroso(Persona):-
-	acataOrden(Jefe,Persona),
-	esPeligroso(Jefe).
-
-% 2- San Cayetano
+% 2- SAN CAYETANO
 
 sanCayetano(Personaje):-
 	encargo(Personaje,_,_),
@@ -168,36 +122,37 @@ sonAmigos(Persona,OtraPersona):-
 	amigo(OtraPersona,Persona).
 	
 % Si bien da que es bernardo, aparece 3 veces por lo que dijo la ultima vez el ayudante sobre todos los posibles valores que hagan verdadera la regla
->>>>>>> 2d9d2ee4eb4d172f5a112929791a02d31473050f
 
+   
 % 3- NIVEL DE RESPETO
 
-<<<<<<< HEAD
+nivelRespeto(vincent,15).
+nivelRespeto(Personaje,Nivel) :-
+personaje(Personaje,Ocupacion),
+   ocupacion(Ocupacion, Nivel).
+   
 
-=======
-nivelDeRespeto(vincent,15).
-nivelDeRespeto(Persona,NivelDeRespeto):-
-	personaje(Persona,Tipo),
-	tipoDeOcupacion(Tipo,NivelDeRespeto).
+ocupacion(mafioso(resuelveProblemas),10).
+ocupacion(mafioso(capo),20).
+ocupacion(actriz(Peliculas),Nivel):-
+length(Peliculas,Cantidad),
+Nivel is Cantidad/10 .
 
-tipoDeOcupacion(actriz(ListaDePeliculas),NivelDeRespeto):-
-	length(ListaDePeliculas,CantidadDePeliculas),
-	NivelDeRespeto is CantidadDePeliculas / 10.
-tipoDeOcupacion(mafioso(resuelveProblemas),10).
-tipoDeOcupacion(mafioso(capo),20).
->>>>>>> 2d9d2ee4eb4d172f5a112929791a02d31473050f
 
 % 4 - RESPETABILIDAD
 esRespetable(Personaje):-
-nivelDeRespeto(Personaje,NivelDeRespeto),
-NivelDeRespeto > 9.
+nivelRespeto(Personaje,Nivel),
+Nivel > 9.
 
-respetabilidad(Respetables,NoRespetables):-
-findall(Personaje,personaje(Personaje,_),ListaDePersonajes),
-length(ListaDePersonajes,CantidadDePersonajes),
-findall(Personaje,esRespetable(Personaje),ListaDeRespetables),
-length(ListaDeRespetables,Respetables),
-NoRespetables is (CantidadDePersonajes - Respetables).
+noEsRespetable(Personaje):-
+personaje(Personaje,_),
+not((esRespetable(Personaje))).
+
+respetabilidad(CantidadRespetables,CantidadNoRespetables):-
+findall(Personaje, esRespetable(Personaje), PersonajesRespetables),
+length(PersonajesRespetables,CantidadRespetables),
+findall(Personaje, noEsRespetable(Personaje), PersonajesNoRespetables),
+length(PersonajesNoRespetables,CantidadNoRespetables).
 
 % 5- MAS ATAREADO
 
