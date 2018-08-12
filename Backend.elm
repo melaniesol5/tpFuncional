@@ -1,6 +1,6 @@
 module Backend exposing(..)
 import Models exposing(Movie, Preferences)
-import List exposing(sortBy,filter)
+import List exposing(sortBy,filter,any)
 
 completaAca = identity
 
