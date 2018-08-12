@@ -37,7 +37,10 @@ tieneAlgunoDeLosGeneros genero pelicula = any ((==) genero) pelicula.genre
 -- **************
 
 filtrarPeliculasPorMenoresDeEdad : Bool -> List Movie -> List Movie
-filtrarPeliculasPorMenoresDeEdad mostrarSoloMenores = completaAca
+filtrarPeliculasPorMenoresDeEdad mostrarSoloMenores = List.filter(esParaChicos mostrarSoloMenores)
+
+esParaChicos : Bool -> Movie -> Bool
+esParaChicos mostrarSoloMenores pelicula = mostrarSoloMenores == pelicula.forKids
 
 -- **************
 -- Requerimiento: ordenar las películas por su rating;
@@ -52,7 +55,12 @@ ordenarPeliculasPorRating  = sortBy .rating
 -- **************
 
 darLikeAPelicula : Int -> List Movie -> List Movie
-darLikeAPelicula id = completaAca
+darLikeAPelicula id =  map (incrementarLikes id)
+
+incrementarLikes : Int -> Movie -> Movie
+incrementarLikes id pelicula = case (id == pelicula.id) of
+                              True  -> { pelicula | likes = pelicula.likes + 1 }
+                              False -> { pelicula | likes = pelicula.likes }
 
 -- **************
 -- Requerimiento: cargar preferencias a través de un popup modal,
