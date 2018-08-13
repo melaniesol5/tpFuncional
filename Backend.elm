@@ -68,5 +68,22 @@ incrementarLikes id pelicula = if (id == pelicula.id) then { pelicula | likes = 
 -- **************
 
 calcularPorcentajeDeCoincidencia : Preferences -> List Movie -> List Movie
-calcularPorcentajeDeCoincidencia preferencias = completaAca
+calcularPorcentajeDeCoincidencia preferencias = ((map (ajustarPorcentajes)) <<  (map (incrementarPorcentaje preferencias)))
 
+incrementarPorcentaje : Preferences -> Movie -> Movie
+incrementarPorcentaje preferencias pelicula = if (esPelicula preferencias pelicula.title) then { pelicula | matchPercentage = (incrementarPorcentajePorKeywords preferencias pelicula) + (incrementarPorcentajePorActores preferencias pelicula) + (incrementarPorcentajePorGenero preferencias pelicula) } else { pelicula | matchPercentage = pelicula.matchPercentage }
+
+esPelicula : Preferences -> String -> Bool
+esPelicula preferencias tituloPelicula = List.all (\palabra -> String.contains palabra tituloPelicula) (String.split " " preferencias.keywords)
+
+incrementarPorcentajePorKeywords : Preferences -> Movie -> Int
+incrementarPorcentajePorKeywords preferencias pelicula = ( (*) 20 << List.length << filter (flip (String.contains) pelicula.title)  <<  String.split " " ) preferencias.keywords
+
+incrementarPorcentajePorActores : Preferences -> Movie -> Int
+incrementarPorcentajePorActores preferencias pelicula = if (List.member preferencias.favoriteActor pelicula.actors) then 50 else 0
+
+incrementarPorcentajePorGenero : Preferences -> Movie -> Int
+incrementarPorcentajePorGenero preferencias pelicula = if (List.member preferencias.genre pelicula.genre) then 60 else 0
+
+ajustarPorcentajes : Movie -> Movie
+ajustarPorcentajes pelicula = if (pelicula.matchPercentage > 100) then { pelicula | matchPercentage = 100 } else { pelicula | matchPercentage = pelicula.matchPercentage }
