@@ -1,3 +1,5 @@
+// PARTE 1
+
 object rolando {
 	var nombreHechizoPreferido = espectroMalefico.nombre()
 	var poderHechizoPreferido = espectroMalefico.poder()
