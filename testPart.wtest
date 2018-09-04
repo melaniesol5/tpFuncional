@@ -1,5 +1,7 @@
 import example.*
 
+// PARTE 1
+
 test "Conocer el nivel de hechiceria de Ronaldo" {
 	  assert.equals(56,rolando.nivelDeHechizo())
 }
