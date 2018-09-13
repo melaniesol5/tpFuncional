@@ -69,6 +69,12 @@ esFiel(Personaje):-
 saleCon(Personaje, Alguien),
 not((saleCon(Personaje,Alguien), saleCon(Personaje, AlguienMas), Alguien\=AlguienMas)).
 
+%5 ACATA ORDEN
+acataOrden(Empleador,Empleado2):-
+trabajaPara(Empleador,Empleado1),
+acataOrden(Empleado1,Empleado2),
+Empleado1\=Empleado2.
+
 
 %5- ACATA ORDEN
 
